@@ -42,7 +42,7 @@ jobs:
       - name: Configure CMake (BOO)
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
       
-      - name: Build with CMake :Pleading:
+      - name: Build with CMake _Pleading_
         run: cmake --build build --config Release
         
       - name: Upload build artifacts
