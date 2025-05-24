@@ -42,16 +42,14 @@ jobs:
       - name: Create build directory
         run: cmake -E make_directory build
 
-      - name: Configure with CMake
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build with cmake
+        run: cmake --build build --config Release
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: MinecraftProfileCreator (${{ matrix.os == 'windows-latest' && 'windows' || matrix.os == 'macos-latest' && 'mac' || 'linux' }})
           path: |
-            **/MinecraftProfileCreator.exe
-            **/MinecraftProfileCreator.app
-            **/MinecraftProfileCreator
+            *
 
 
