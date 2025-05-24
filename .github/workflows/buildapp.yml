@@ -50,8 +50,8 @@ jobs:
         with:
           name: MinecraftProfileCreator (${{ matrix.os == 'windows-latest' && 'windows' || matrix.os == 'macos-latest' && 'mac' || 'linux' }})
           path: |
-            */build/**/MinecraftProfileCreator.exe
-            */build/**/MinecraftProfileCreator.app
-            */build/MinecraftProfileCreator
+            **/MinecraftProfileCreator.exe
+            **/MinecraftProfileCreator.app
+            **/MinecraftProfileCreator
 
 
