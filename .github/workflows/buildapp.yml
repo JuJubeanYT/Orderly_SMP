@@ -18,10 +18,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up CMake
-        uses: lukka/get-cmake@v3
+      - name: Set up CMake (Linux/macOS only)
+        if: runner.os != 'Windows'
+        run: sudo apt-get update && sudo apt-get install -y cmake
 
-      - name: Create Build Directory
+      - name: Create build directory
         run: cmake -E make_directory build
 
       - name: Configure with CMake
@@ -30,9 +31,9 @@ jobs:
       - name: Build with CMake
         run: cmake --build build --config Release
 
-      - name: Upload Build Artifacts
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: mrPackExtractor-(${{ runner.os }})
+          name: ModsUnpacker-(${{ runner.os }})
           path: |
             build/*
