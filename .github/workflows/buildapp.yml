@@ -54,42 +54,42 @@ jobs:
             **/MinecraftProfileCreator.app
             **/MinecraftProfileCreator
 
-Combine:
-  needs: build
-  runs-on: ubuntu-latest
-  steps:
-    - name: Download Linux artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: build-ubuntu-latest
-        path: linux
+  Combine:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-ubuntu-latest
+          path: linux
 
-    - name: Download macOS artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: build-macos-latest
-        path: macos
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-macos-latest
+          path: macos
 
-    - name: Download Windows artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: build-windows-latest
-        path: windows
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-windows-latest
+          path: windows
 
-    - name: Prepare combined artifact folder
-      run: |
-        mkdir combined
-        # Copy .exe files (Windows)
-        find linux windows macos -type f -name '*.exe' -exec cp {} combined/ \;
-        # Copy .app bundles (macOS) — directories
-        find linux windows macos -type d -name '*.app' -exec cp -R {} combined/ \;
-        # Copy executables named MinecraftProfileCreator (no extension)
-        find linux windows macos -type f -name 'MinecraftProfileCreator' -exec cp {} combined/ \;
+      - name: Prepare combined artifact folder
+        run: |
+          mkdir combined
+          # Copy .exe files (Windows)
+          find linux windows macos -type f -name '*.exe' -exec cp {} combined/ \;
+          # Copy .app bundles (macOS) — directories
+          find linux windows macos -type d -name '*.app' -exec cp -R {} combined/ \;
+          # Copy executables named MinecraftProfileCreator (no extension)
+          find linux windows macos -type f -name 'MinecraftProfileCreator' -exec cp {} combined/ \;
 
-    - name: Upload combined artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: MinecraftProfileCreator-AllPlatforms
-        path: combined/
+      - name: Upload combined artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MinecraftProfileCreator-AllPlatforms
+          path: combined/
 
 
