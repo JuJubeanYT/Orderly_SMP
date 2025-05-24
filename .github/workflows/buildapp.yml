@@ -1,0 +1,59 @@
+name: Cross-platform Build with CMake
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup CMake
+      uses: lukka/get-cmake@v3
+
+    - name: Configure CMake
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build project
+      run: cmake --build build --config Release
+
+    - name: Find built executable
+      id: find_exe
+      shell: bash
+      run: |
+        echo "Searching for executable in build directory..."
+
+        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          EXE_PATH=$(find build -type f -name "*.exe" | head -n 1)
+        elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+          EXE_PATH=$(find build -type f -perm +111 -exec file {} \; | grep executable | cut -d: -f1 | head -n 1)
+          # fallback if above doesn't find, just any executable file
+          if [ -z "$EXE_PATH" ]; then
+            EXE_PATH=$(find build -type f -perm +111 | head -n 1)
+          fi
+        else
+          EXE_PATH=$(find build -type f -perm /111 | head -n 1)
+        fi
+
+        if [ -z "$EXE_PATH" ]; then
+          echo "Error: No executable found in build directory!"
+          exit 1
+        fi
+
+        echo "Found executable: $EXE_PATH"
+        echo "exe_path=$EXE_PATH" >> $GITHUB_OUTPUT
+
+    - name: Upload executable artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-${{ matrix.os }}
+        path: ${{ steps.find_exe.outputs.exe_path }}
