@@ -9,12 +9,17 @@
 #include <windows.h>
 #include <wininet.h>
 #pragma comment(lib, "wininet.lib")
+#else
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <unistd.h>
 #endif
 
 bool downloadFile(std::string url, const std::string& outputPath) {
     if (url.rfind("https://", 0) == 0) {
-       // std::cerr << "[!] HTTPS not supported in this build. Attempting HTTP fallback...\n";
-        url = "http://" + url.substr(8);  
+        // std::cerr << "[!] HTTPS not supported in this build. Attempting HTTP fallback...\n";
+        url = "http://" + url.substr(8);
     }
     if (url.substr(0, 7) != "http://") {
         std::cerr << "[X] Only HTTP is supported. URL: " << url << "\n";
@@ -56,19 +61,38 @@ bool downloadFile(std::string url, const std::string& outputPath) {
     addrinfo hints{}, *res;
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
-    if (getaddrinfo(host.c_str(), "80", &hints, &res) != 0) return false;
+    if (getaddrinfo(host.c_str(), "80", &hints, &res) != 0) {
+        std::cerr << "[X] getaddrinfo failed for host: " << host << "\n";
+        return false;
+    }
 
     int sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-    if (sock < 0 || connect(sock, res->ai_addr, res->ai_addrlen) != 0) {
+    if (sock < 0) {
+        std::cerr << "[X] socket creation failed\n";
         freeaddrinfo(res);
+        return false;
+    }
+
+    if (connect(sock, res->ai_addr, res->ai_addrlen) != 0) {
+        std::cerr << "[X] connect failed\n";
+        freeaddrinfo(res);
+        close(sock);
         return false;
     }
     freeaddrinfo(res);
 
     std::ostringstream req;
-
+    req << "GET " << path << " HTTP/1.1\r\n"
+        << "Host: " << host << "\r\n"
+        << "Connection: close\r\n"
+        << "\r\n";
     std::string request = req.str();
-    send(sock, request.c_str(), request.size(), 0);
+
+    if (send(sock, request.c_str(), request.size(), 0) < 0) {
+        std::cerr << "[X] send failed\n";
+        close(sock);
+        return false;
+    }
 
     char buffer[4096];
     int received;
@@ -80,12 +104,19 @@ bool downloadFile(std::string url, const std::string& outputPath) {
 
     std::string fullResponse = response.str();
     size_t bodyPos = fullResponse.find("\r\n\r\n");
-    if (bodyPos == std::string::npos) return false;
+    if (bodyPos == std::string::npos) {
+        std::cerr << "[X] Invalid HTTP response (no header/body split)\n";
+        return false;
+    }
 
     std::ofstream out(outputPath, std::ios::binary);
+    if (!out) {
+        std::cerr << "[X] Failed to open output file\n";
+        return false;
+    }
     out.write(fullResponse.c_str() + bodyPos + 4, fullResponse.size() - bodyPos - 4);
     out.close();
 #endif
-return true;
-}
 
+    return true;
+}
