@@ -1,0 +1,25 @@
+# CMake generation dependency list for this directory.
+C:/Users/momo2/Downloads/minecraft_profile_creator/CMakeLists.txt
+C:/Users/momo2/Downloads/minecraft_profile_creator/build/CMakeFiles/3.27.4/CMakeCCompiler.cmake
+C:/Users/momo2/Downloads/minecraft_profile_creator/build/CMakeFiles/3.27.4/CMakeCXXCompiler.cmake
+C:/Users/momo2/Downloads/minecraft_profile_creator/build/CMakeFiles/3.27.4/CMakeRCCompiler.cmake
+C:/Users/momo2/Downloads/minecraft_profile_creator/build/CMakeFiles/3.27.4/CMakeSystem.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCInformation.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCXXInformation.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCommonLanguageInclude.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/CMakeGenericSystem.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/CMakeInitializeConfigs.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/CMakeLanguageInformation.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/CMakeRCInformation.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/CMakeSystemSpecificInformation.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/CMakeSystemSpecificInitialize.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/Compiler/MSVC-C.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/Compiler/MSVC-CXX.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/Compiler/MSVC.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/Platform/Windows-Initialize.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/Platform/Windows-MSVC-C.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/Platform/Windows-MSVC-CXX.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/Platform/Windows-MSVC.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/Platform/Windows.cmake
+E:/Program Files/CMake/share/cmake-3.27/Modules/Platform/WindowsPaths.cmake
