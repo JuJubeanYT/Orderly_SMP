@@ -38,10 +38,13 @@ jobs:
         run: |
           if (Test-Path build) { Remove-Item -Recurse -Force build }
         shell: powershell
-
-      - name: Build with cmake
+        
+      - name: Configure CMake (BOO)
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      
+      - name: Build with CMake :Pleading:
         run: cmake --build build --config Release
-
+        
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
