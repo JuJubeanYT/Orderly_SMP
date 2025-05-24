@@ -45,11 +45,27 @@ jobs:
       - name: Configure with CMake
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
-      - name: Upload build artifacts
+      - name: Find executable path
+        id: find-exe
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            exe_path=$(find build -type f -iname "MinecraftProfileCreator.exe" | head -n 1)
+            echo "exe_path=$exe_path" >> $GITHUB_OUTPUT
+            echo "os_name=windows" >> $GITHUB_OUTPUT
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            app_path=$(find build -type d -iname "MinecraftProfileCreator.app" | head -n 1)
+            echo "exe_path=$app_path" >> $GITHUB_OUTPUT
+            echo "os_name=mac" >> $GITHUB_OUTPUT
+          else
+            exe_path=$(find build -type f -iname "MinecraftProfileCreator" | head -n 1)
+            echo "exe_path=$exe_path" >> $GITHUB_OUTPUT
+            echo "os_name=linux" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+      
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-              name: ModPackInstaller (${{ matrix.os == 'windows-latest' && 'windows' || matrix.os == 'macos-latest' && 'mac' || 'linux' }})
-              path: |
-                build/**/*.exe
-                build/**/*.app
-                build/**/ModPackInstaller
+          name: MinecraftProfileCreator (${{ steps.find-exe.outputs.os_name }})
+          path: ${{ steps.find-exe.outputs.exe_path }}
+
