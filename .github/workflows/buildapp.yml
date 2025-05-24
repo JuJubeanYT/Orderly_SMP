@@ -39,9 +39,6 @@ jobs:
           if (Test-Path build) { Remove-Item -Recurse -Force build }
         shell: powershell
 
-      - name: Create build directory
-        run: cmake -E make_directory build
-
       - name: Build with cmake
         run: cmake --build build --config Release
 
