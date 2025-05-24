@@ -1,63 +1,38 @@
-name: Cross-platform Build with CMake
-
-permissions:
-  contents: read
-  actions: read
+name: CMake Build (Multi-Platform)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
+    branches: [main]
 
 jobs:
   build:
+    name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup CMake
-        uses: jwlawson/actions-setup-cmake@v1
+      - name: Set up CMake
+        uses: lukka/get-cmake@v3
 
-      - name: Configure CMake
+      - name: Create Build Directory
+        run: cmake -E make_directory build
+
+      - name: Configure with CMake
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
-      - name: Build project
+      - name: Build with CMake
         run: cmake --build build --config Release
 
-      - name: Locate built executable
-        id: find_exe
-        shell: bash
-        run: |
-          echo "Searching for built executable..."
-
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            EXE_PATH=$(find build -type f -name "*.exe" | head -n 1)
-          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            EXE_PATH=$(find build -type f -perm +111 -exec file {} \; | grep executable | cut -d: -f1 | head -n 1)
-            if [[ -z "$EXE_PATH" ]]; then
-              EXE_PATH=$(find build -type f -perm +111 | head -n 1)
-            fi
-          else
-            EXE_PATH=$(find build -type f -executable | head -n 1)
-          fi
-
-          if [[ -z "$EXE_PATH" ]]; then
-            echo "Error: No executable found in build directory!"
-            exit 1
-          fi
-
-          echo "Found executable: $EXE_PATH"
-          echo "exe_path=$EXE_PATH" >> "$GITHUB_OUTPUT"
-
-      - name: Upload executable artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: app-${{ matrix.os }}
-          path: ${{ steps.find_exe.outputs.exe_path }}
+          name: mrPackExtractor-(${{ runner.os }})
+          path: |
+            build/*
